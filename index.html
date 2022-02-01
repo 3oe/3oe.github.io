@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Abcord</title>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/faunadb@latest/dist/faunadb.js"></script>
+    </head>
+    <style>
+        body{
+            padding: 1%;
+            font-family: 'Montserrat';
+            background-color: #121212;
+            color: white;
+            text-align: center;
+
+
+        }
+
+        @keyframes slideInFromTop{
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromBottom{
+    0% {
+        transform: translateY(500%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+
+
+        h1{
+            font-size: 3vw;
+        }
+
+        p{
+            font-size: 1.3vw;
+            margin-bottom: 3%;
+        }
+
+        button{
+
+            background-color: #18ab44;
+            border: none;
+            cursor: pointer;
+            height: 3vw;
+            border-radius: 0.5vh;
+            font-size:1vw;
+            font-family: 'Montserrat';
+            overflow: hidden;
+            width: 10%;
+            color: white;
+            margin-bottom: 1%;
+
+
+        }
+        button:hover{
+            background-color: #13943a;
+        }
+
+        .footer-text{
+            font-size: 0.8vw;
+            margin-bottom: 3%;
+            color: #cccccc;
+            animation: 1s ease-out 0s 1 slideInFromBottom;
+        }
+        .main{
+            animation: 1s ease-out 0s 1 slideInFromTop;
+        }
+
+        @font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/montserrat/v21/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Hw0aXpsog.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+    </style>
+    <body onload="getUserCount()">
+        <div class="main">
+        <h1>Abcord</h1>
+        <p id="text">Discord Gateway Client.</p>
+        <button onclick="redirect('create.html')">Create</button>
+        <br>
+        <button onclick="redirect('signup.html')">Discord</button>
+        </div>
+        <div class="footer">
+            <p class="footer-text"><i>Copyright © 2020-2021 AbSq | All Rights Reserved.</i></p>
+          </div>
+    </body>
+    <script>
+var faunadb = window.faunadb
+  var q = faunadb.query
+  var client = new faunadb.Client({
+    secret: 'fnAEeDsSnvAAyITXEfZAt5ZFOg2QZDVYR092ArRa',
+    domain: 'db.eu.fauna.com',
+    scheme: 'https',
+  })
+
+  function getUserCount(){
+
+    client
+        .query(
+          q.Map(
+            q.Paginate(q.Documents(q.Collection("gateways")), { size: 100000 }),
+            q.Lambda("X", q.Get(q.Var("X")))
+          )
+        )
+        .then(function (x) {
+
+            if(x.data.length == 1)
+            {
+                document.getElementById("text").innerHTML = "The best Discord Web Client with <b>" + x.data.length + "</b> active server."
+            }
+            else{
+            document.getElementById("text").innerHTML = "The best Discord Web Client with <b>" + x.data.length + "</b> active servers."
+            }
+
+        });
+
+
+  }
+
+  function redirect(url){
+      let name = window.location.href.split("/")
+      let path = "";
+      for (let i = 0; i < (name.length - 1); i++) {
+            path = path + name[i] + "/"      
+      }
+      window.location.href = path + url
+  }
+    </script>
+</html>
